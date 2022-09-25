@@ -45,7 +45,7 @@ export const useToDoStore = create<ToDoStore>((set, get) => ({
     set({
       tasks: tasks.map((task) => ({
         ...task,
-        tittle: task.id === id ? title : task.title,
+        title: task.id === id ? title : task.title,
 
       }))
     });

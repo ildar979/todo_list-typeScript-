@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './index.module.scss';
 
 interface InputTaskProps {
@@ -17,30 +17,70 @@ export const GivenTask: React.FC<InputTaskProps> = ({
  }) => {
 
   const [checked, setChecked] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [value, setValue] = useState(title);
+  const editTitleInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if(isEdit) {
+      editTitleInputRef?.current?.focus()
+    }
+  }, [isEdit]);
 
   return (
     <div className={ styles.inputValue }>
-      <label>
+      <label className={ styles.inputValueLabel }>
         <input
           type='checkbox'
+          disabled={isEdit}
           checked={checked}
           className={ styles.inputValueCheckbox}
           onChange={(evt) => {
             setChecked(evt.target.checked);
             if(evt.target.checked) {
-              onDone(id)
+              setTimeout(() => {
+                onDone(id)
+              }, 500);
             }
           }}
         />
-        <h3 className={ styles.inputValueTitle }>{title}</h3>
+        { isEdit ? (
+          <input
+            value={value}
+            ref={editTitleInputRef}
+            onChange={(evt) => {
+              setValue(evt.target.value)
+            }}
+            className={ styles.inputValueEditTitle }
+            onKeyDown={(evt) => {
+              if(evt.key === 'Enter') {
+                onEdited(id, value)
+                setIsEdit(false)
+              }
+            }}
+          />
+        ) : (
+          <h3 className={ styles.inputValueTitle }>{title}</h3>
+        )}
       </label>
-      <button
-        aria-label='Edit'
-        className={ styles.inputValueEdit }
-        onClick={() => {
-
-        }} 
-      />
+      { isEdit ? (
+        <button
+          aria-label='Save'
+          className={ styles.inputValueSave }
+          onClick={() => {
+            onEdited(id, value)
+            setIsEdit(false)
+          }}
+        />
+      ) : (
+        <button
+          aria-label='Edit'
+          className={ styles.inputValueEdit }
+          onClick={() => {
+            setIsEdit(true)
+          }} 
+        />
+      )}
       <button
         aria-label='Remove'
         className={ styles.inputValueRemove }
