@@ -15,13 +15,19 @@ interface ToDoStore {
   removeTask: (id: string) => void;
 }
 
+
 export const useToDoStore = create<ToDoStore>((set, get) => ({
   tasks: [
     {
-      id: '1',
-      title: 'sdfsdf',
+      id: 'dfgdfg',
+      title: '1 пошел',
       createdAt: 45
-    }
+    },
+    {
+      id: 'hjhjkh',
+      title: '2 пошел',
+      createdAt: 55
+    },
   ],
   createTask: (title) => {
     const { tasks } = get();
